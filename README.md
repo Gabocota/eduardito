@@ -1,0 +1,2 @@
+# eduardito
+Discord DJ bot
