@@ -2,9 +2,6 @@ const ytdl = require('ytdl-core');
 
 const path = require('path');
 
-const axios = require('axios');
-const cheerio = require('cheerio');
-
 const {
     joinVoiceChannel,
     createAudioPlayer,
