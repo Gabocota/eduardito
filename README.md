@@ -9,3 +9,7 @@ If you call it from one server it'll leave any other channel
 This is meant as a solution for small servers that don't want the hassle of looking for a descent music bot.
 
 (Educational purposes)
+
+![image](https://github.com/Gabocota/eduardito/assets/88735758/1b55c3f6-75bb-42aa-bb4b-9bb849120402)
+![image](https://github.com/Gabocota/eduardito/assets/88735758/b32c9655-06b1-4fb6-81d1-4690edf49ea4)
+![image](https://github.com/Gabocota/eduardito/assets/88735758/30305ee9-4ace-46f2-b112-ad7bbf9d3748)
