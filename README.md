@@ -8,4 +8,4 @@ If you call it from one server it'll leave any other channel
 
 This is meant as a solution for small servers that don't want the hassle of looking for a descent music bot.
 
-(Education purposes)
+(Educational purposes)
