@@ -249,7 +249,9 @@ function sendResult(output, message, action) { //send the results of a youtube s
     }
     let toSend = "Youtube search: (Choose one sending the number)\n"
     for (let i = 0; i < output.length; i++) {
-        toSend += i + 1 + "- **" + output[i].title + "** (" + output[i].length.simpleText + ")\n"
+        try{
+            toSend += i + 1 + "- **" + output[i].title + "** (" + output[i].length.simpleText + ")\n"
+        } catch {} 
     }
     message.reply(toSend)
     interactions.push({
