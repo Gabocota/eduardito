@@ -560,10 +560,10 @@ client.on('messageCreate', async (message) => {
             try {
                 var searchQuery = current.name.split(" ").join("%20")
                 if (searchQuery.indexOf("–") != -1 && searchQuery.split("–%20")[1] != "") { // – this is dumb
-                    searchQuery = searchQuery.split("–%20")[1]
+                    searchQuery = searchQuery.split("%20–%20")[1] + "%20" + searchQuery.split("%20–%20")[0]
                 }
                 if (searchQuery.indexOf("-") != -1 && searchQuery.split("-%20")[1] != "") { // - but theres two different characters
-                    searchQuery = searchQuery.split("-%20")[1]
+                    searchQuery = searchQuery.split("%20-%20")[1] + "%20" + searchQuery.split("%20-%20")[0]
                 }
                 if (searchQuery.indexOf("(") != -1 && searchQuery.replace(/\([^)]*\)/g, '')) { // delete ()
                     searchQuery = searchQuery.replace(/\([^)]*\)/g, '')
@@ -578,6 +578,7 @@ client.on('messageCreate', async (message) => {
         } else {
             var searchQuery = message.content.toLowerCase().split(" ").slice(1).join("%20")
         }
+        console.log("Lyric search: " + searchQuery)
         axios.get("https://search.azlyrics.com/suggest.php?q=" + searchQuery)
             .then(data => {
                 try {
@@ -605,7 +606,6 @@ client.on('messageCreate', async (message) => {
 
                     })
             })
-
     } else if (message.content.toLowerCase().split(" ")[0] == "!leave" && message.author.id == ADMIN) { //just to make sure you can leave any server you want without having admin
         message.reply("bye")
         message.guild.leave()
