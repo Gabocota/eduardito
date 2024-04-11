@@ -130,25 +130,8 @@ function play(song) { //function to play a song
                 current = song
                 var playingMessage = ""
                 playing = true
-                if (song.name == "No name yet") { //wacky way to get the name of the song
-                    axios.get(song.link)
-                        .then(response => {
-                            var title = response.data.split("<title>")[1].split("</title>")[0].split(" - YouTube")[0]
-                            if (title) {
-                                playingMessage = 'Now Playing:\n**' + title + "**"
-                            } else {
-                                song.message.reply('Failed to retrieve video title.');
-                                playingMessage = "Error getting title lmao"
-                            }
-                            song.message.channel.send(playingMessage)
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                } else {
-                    playingMessage = 'Now Playing:\n**' + song.name + "**"
-                    song.message.channel.send(playingMessage)
-                }
+                playingMessage = 'Now Playing:\n**' + song.name + "**"
+                song.message.channel.send(playingMessage)
             } catch (error) {
                 console.error(error);
                 try {
@@ -158,6 +141,21 @@ function play(song) { //function to play a song
                 return
             }
             outputStream.close();
+        });
+}
+
+function getName(link) {
+    return axios.get(link)
+        .then(response => {
+            var title = response.data.split("<title>")[1].split("</title>")[0].split(" - YouTube")[0]
+            if (title) {
+                return title
+            } else {
+                return "Error getting title"
+            }
+        })
+        .catch(error => {
+            return "Error getting title"
         });
 }
 
@@ -249,9 +247,9 @@ function sendResult(output, message, action) { //send the results of a youtube s
     }
     let toSend = "Youtube search: (Choose one sending the number)\n"
     for (let i = 0; i < output.length; i++) {
-        try{
+        try {
             toSend += i + 1 + "- **" + output[i].title + "** (" + output[i].length.simpleText + ")\n"
-        } catch {} 
+        } catch {}
     }
     message.reply(toSend)
     interactions.push({
@@ -280,21 +278,24 @@ function userRequest(message, action) {
             })
     } else if (message.content.split(" ")[1].split("www.youtube.com")[0] == "https://") { //if direct youtube link
         try {
-            let song = {
-                "link": "https://" + message.content.split(" ")[1].split("&")[0].split("//")[1],
-                "name": "No name yet",
-                "message": message
-            }
-            if (action == "play") {
-                if (downloading) {
-                    waitDownload(song)
-                } else {
-                    play(song)
-                }
-            } else if (action == "add") {
-                queue.push(song)
-                message.reply("Added to queue")
-            }
+            getName("https://" + message.content.split(" ")[1].split("&")[0].split("//")[1])
+                .then(title => {
+                    let song = {
+                        "link": "https://" + message.content.split(" ")[1].split("&")[0].split("//")[1],
+                        "name": title,
+                        "message": message
+                    }
+                    if (action == "play") {
+                        if (downloading) {
+                            waitDownload(song)
+                        } else {
+                            play(song)
+                        }
+                    } else if (action == "add") {
+                        queue.push(song)
+                        message.reply("**" + title + "** added to the queue")
+                    }
+                })
         } catch {}
     } else { // else just search the terms
         search(message.content.split(" ").slice(1, 3000).join(" "))
@@ -339,12 +340,13 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
     var response = await axios.get(url)
     try {
         var TracklistRow_tag__ = "TracklistRow_tag__" + response.data.split('TracklistRow_tag__')[1].split('"')[0] //there may not be an explicit song
+        var Tag_container__ = "Tag_container__" + response.data.split('Tag_container__')[1].split('"')[0] //not sure how this is not found sometimes
     } catch {}
     classes = { //the class names change every few weeks
         "TrackList_trackListContainer__": 'TrackList_trackListContainer__' + response.data.split('TrackList_trackListContainer__')[1].split('"')[0],
         "TracklistRow_title__": "TracklistRow_title__" + response.data.split('TracklistRow_title__')[1].split('"')[0],
         "TracklistRow_subtitle__": "TracklistRow_subtitle__" + response.data.split('TracklistRow_subtitle__')[1].split('"')[0],
-        "Tag_container__": "Tag_container__" + response.data.split('Tag_container__')[1].split('"')[0],
+        "Tag_container__": Tag_container__,
         "TracklistRow_tag__": TracklistRow_tag__
     }
     let data = response.data.split('<ol class="' + classes.TrackList_trackListContainer__ + '" aria-label="Track list">')[1].split("</ol>")[0].split("</li>")
