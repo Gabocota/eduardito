@@ -227,8 +227,8 @@ function iInteractions(name) { //get the index of the interaction
 function getSpotyName(link) { //get a name from spotify
     return axios.get(link)
         .then(response => {
-            var name = response.data.split("<h1 class=\"Type__TypeElement-sc-goli3j-0 gyivyS gj6rSoF7K4FohS2DJDEm\" data-encore-id=\"type\">")[1].split("</h1>")[0];
-            name += " " + response.data.split("<div dir=\"ltr\" class=\"Type__TypeElement-sc-goli3j-0 bkjCej t5WPFlGTY6GCd9UOFfLu\" data-encore-id=\"type\">")[1].split("</div>")[0]
+            var name = response.data.split("<meta name=\"description\" content=\"Listen to ")[1].split(" on Spotify. ")[0];
+            name += " " + response.data.split("<meta name=\"music:musician_description\" content=\"")[1].split("\"/>")[0]
             if (name == "") {
                 return "NE";
             } else {
