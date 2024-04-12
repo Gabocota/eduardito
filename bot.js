@@ -3,6 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const youtubesearchapi = require("youtube-search-api");
 const fs = require('fs')
+const he = require('he');
 
 const solitudeLink = "https://www.youtube.com/watch?v=xiU-O8arVa8"
 
@@ -53,6 +54,11 @@ function del() { //deletes everything in the files folder. Just to make sure the
         });
 
     });
+}
+
+function cleanQueryForSearch(htmlString) {
+    const stringWithoutHash = htmlString.replace(/#/g, '');
+    return he.decode(stringWithoutHash);
 }
 
 function stop() { //stop the current song
@@ -198,6 +204,7 @@ function start(song, player) { //maybe i should join the start and the play func
 
 async function search(query) { //works surprisingly bad
     try {
+        query = cleanQueryForSearch(query)
         const data = await youtubesearchapi.GetListByKeyword(query, {
             limit: 5
         })
