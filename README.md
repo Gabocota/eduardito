@@ -8,6 +8,16 @@ If you call it from one server it'll leave any other channel
 
 This is meant as a solution for small servers that don't want the hassle of looking for a descent music bot.
 
+Commands:
+
+!play <youtube link/spotify link/search query>
+!stop
+!skip
+!queue 
+!playlist <spotify link\>
+!album <spotify link\>
+!add <youtube link/spotify link/search query>
+
 (Educational purposes)
 
 ![image](https://github.com/Gabocota/eduardito/assets/88735758/1b55c3f6-75bb-42aa-bb4b-9bb849120402)
