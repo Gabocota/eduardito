@@ -33,3 +33,7 @@ Commands:
 ![image](https://github.com/Gabocota/eduardito/assets/88735758/30305ee9-4ace-46f2-b112-ad7bbf9d3748)
 
 (Educational purposes)
+
+to run in replit also run 
+`npm install libsodium-wrappers`
+`npm install ffmpeg-static`
