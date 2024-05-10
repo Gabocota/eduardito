@@ -11,12 +11,19 @@ This is meant as a solution for small servers that don't want the hassle of look
 Commands:
 
 !play <youtube link/spotify link/search query>
+
 !stop
+
 !skip
+
 !queue 
+
 !playlist <spotify link\>
+
 !album <spotify link\>
+
 !add <youtube link/spotify link/search query>
+
 
 (Educational purposes)
 
