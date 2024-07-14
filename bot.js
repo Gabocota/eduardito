@@ -1,11 +1,9 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('@distube/ytdl-core');
 const path = require('path');
 const axios = require('axios');
 const youtubesearchapi = require("youtube-search-api");
 const fs = require('fs')
 const he = require('he');
-
-const solitudeLink = "https://www.youtube.com/watch?v=xiU-O8arVa8"
 
 const ADMIN = "PASTE_YOUR_DISCORD_USER_ID_HERE"
 
@@ -106,7 +104,8 @@ function play(song) { //function to play a song
     var outputStream = fs.createWriteStream(filePath);
 
     ytdl(song.link, {
-            quality: 'lowest' //never really experimented with any other qualities 
+            filter: 'audioonly',
+            quality: 'highestaudio',
         })
         .on('error', (error) => {
             song.message.reply('Video unreachable ' + error) // some videos have a special protection that triggers this
@@ -287,6 +286,7 @@ function userRequest(message, action) {
         try {
             getName("https://" + message.content.split(" ")[1].split("&")[0].split("//")[1])
                 .then(title => {
+                    console.log(message.content)
                     let song = {
                         "link": "https://" + message.content.split(" ")[1].split("&")[0].split("//")[1],
                         "name": title,
@@ -587,7 +587,6 @@ client.on('messageCreate', async (message) => {
         } else {
             var searchQuery = message.content.toLowerCase().split(" ").slice(1).join("%20")
         }
-        console.log("Lyric search: " + searchQuery)
         axios.get("https://search.azlyrics.com/suggest.php?q=" + searchQuery)
             .then(data => {
                 try {
@@ -618,13 +617,7 @@ client.on('messageCreate', async (message) => {
     } else if (message.content.toLowerCase().split(" ")[0] == "!leave" && message.author.id == ADMIN) { //just to make sure you can leave any server you want without having admin
         message.reply("bye")
         message.guild.leave()
-    } else if (message.content.toLowerCase().split(" ")[0] == "!solitude") {
-        repeat = true
-        message.content = "!play " + solitudeLink
-        userRequest(message, "play")
-        message.reply("U okay?")
     }
-
-});
+})
 
 client.login(botToken);
