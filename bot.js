@@ -5,7 +5,7 @@ const youtubesearchapi = require("youtube-search-api");
 const fs = require('fs')
 const he = require('he');
 
-const ADMIN = "PASTE_YOUR_DISCORD_USER_ID_HERE"
+const CONFIG_FILE = "creds.json"
 
 const {
     joinVoiceChannel,
@@ -14,7 +14,6 @@ const {
     StreamType,
     AudioPlayerStatus
 } = require('@discordjs/voice');
-const botToken = 'PASTE_YOUR_DISCORD_TOKEN_HERE';
 
 var channelId
 
@@ -37,6 +36,14 @@ const client = new Client({
 });
 
 client.once('ready', () => {});
+
+
+function readJson(filePath) {
+    const jsonData = fs.readFileSync(filePath, 'utf-8')
+    return JSON.parse(jsonData)
+}
+
+const config = readJson(CONFIG_FILE)
 
 function del() { //deletes everything in the files folder. Just to make sure theres no exploits that destroy my machine
     fs.readdir("./files/", (err, files) => {
@@ -614,10 +621,10 @@ client.on('messageCreate', async (message) => {
 
                     })
             })
-    } else if (message.content.toLowerCase().split(" ")[0] == "!leave" && message.author.id == ADMIN) { //just to make sure you can leave any server you want without having admin
+    } else if (message.content.toLowerCase().split(" ")[0] == "!leave" && message.author.id == config.admin_id) { //just to make sure you can leave any server you want without having config.adminid
         message.reply("bye")
         message.guild.leave()
     }
 })
 
-client.login(botToken);
+client.login(config.bot_token);
