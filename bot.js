@@ -110,19 +110,25 @@ function play(song) { //function to play a song
 
     var outputStream = fs.createWriteStream(filePath);
 
+    failed = false
+
     ytdl(song.link, {
             filter: 'audioonly',
-            quality: 'highestaudio',
+            quality: "highestaudio"
         })
         .on('error', (error) => {
             song.message.reply('Video unreachable ' + error) // some videos have a special protection that triggers this
             console.log(error)
             outputStream.close();
             downloading = false
+            failed = true
             return
         })
         .pipe(outputStream)
         .on('finish', () => {
+            if (failed) {
+                return
+            }
             downloading = false
             if (!song.message.member || !song.message.member.voice.channel) {
                 song.message.reply("Can't see your channel") // check here instead of before the download in case the user leaves for some reason during the download
@@ -293,7 +299,6 @@ function userRequest(message, action) {
         try {
             getName("https://" + message.content.split(" ")[1].split("&")[0].split("//")[1])
                 .then(title => {
-                    console.log(message.content)
                     let song = {
                         "link": "https://" + message.content.split(" ")[1].split("&")[0].split("//")[1],
                         "name": title,
