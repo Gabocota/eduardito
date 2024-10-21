@@ -629,6 +629,8 @@ client.on('messageCreate', async (message) => {
     } else if (message.content.toLowerCase().split(" ")[0] == "!leave" && message.author.id == config.admin_id) { //just to make sure you can leave any server you want without having config.adminid
         message.reply("bye")
         message.guild.leave()
+    } else if (message.content.toLowerCase().split(" ")[0] == "!help" || message.content.toLowerCase().split(" ")[0] == "!h") {
+        message.reply(`!play <youtube link/spotify link/search query>\n!stop\n!skip\n!queue\n!playlist <spotify link>\n!album <spotify link>\n!add <youtube link/spotify link/search query>\n!lyrics <search query> (if blank will search for playing song)`)
     }
 })
 
