@@ -429,6 +429,7 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
 }
 
 client.on('messageCreate', async (message) => {
+    if(message.author.bot) return
     if (awaiting && iInteractions(message.author.username) > -1) { //if theres an interaction awaiting for the user
         if (message.content.toLowerCase() == "cancel") {
             message.reply("cancelled")
