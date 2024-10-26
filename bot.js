@@ -376,9 +376,8 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
         name = decodeHexUnicodeEntities(name)
         artist = decodeHexUnicodeEntities(artist)
         if (artist.split(" ")[0] == "<span") {
-            artist = artist.split('<span aria-label="Explicit" class="' + classes.Tag_container__ + ' ' + classes.TracklistRow_tag__ + '" title="Explicit">E</span>')[1]
+            artist = artist.split('</span>')[1]
         }
-        // console.log(name, artist)
         songs.push({
             "name": name,
             "artist": artist
