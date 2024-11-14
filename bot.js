@@ -371,8 +371,8 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
     let data = response.data.split('<ol class="' + classes.TrackList_trackListContainer__ + '" aria-label="Track list">')[1].split("</ol>")[0].split("</li>")
     for (let i = 0; i < data.length - 1; i++) {
         let name, artist
-        name = data[i].split('<h3 dir="auto" class="' + classes.TracklistRow_title__ + '">')[1].split("</h3>")[0]
-        artist = data[i].split('<h4 dir="auto" class="' + classes.TracklistRow_subtitle__ + '">')[1].split("</h4>")[0]
+        name = data[i].split(classes.TracklistRow_title__ + '" data-encore-id="text" dir="auto">')[1].split("</h3>")[0]
+        artist = data[i].split(classes.TracklistRow_subtitle__ + '" data-encore-id="text" dir="auto">')[1].split("</h4>")[0]
         name = decodeHexUnicodeEntities(name)
         artist = decodeHexUnicodeEntities(artist)
         if (artist.split(" ")[0] == "<span") {
