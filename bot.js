@@ -360,11 +360,7 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
     try {
         var TracklistRow_tag__ = "TracklistRow_tag__" + response.data.split('TracklistRow_tag__')[1].split('"')[0] //there may not be an explicit song
         var Tag_container__ = "Tag_container__" + response.data.split('Tag_container__')[1].split('"')[0] //not sure how this is not found sometimes
-    } catch {
-        message.reply("There was an error parsing the data, make sure your requested item is public")
-        creatingPlaylist = false
-        return
-    }
+    } catch {}
     try {
         classes = { //the class names change every few weeks
             "TrackList_trackListContainer__": 'TrackList_trackListContainer__' + response.data.split('TrackList_trackListContainer__')[1].split('"')[0],
@@ -373,7 +369,8 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
             "Tag_container__": Tag_container__,
             "TracklistRow_tag__": TracklistRow_tag__
         }
-    } catch {
+    } catch(e) {
+        console.log(e)
         message.reply("There was an error parsing the data, make sure your requested item is public")
         creatingPlaylist = false
         return
