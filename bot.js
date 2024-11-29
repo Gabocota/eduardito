@@ -360,13 +360,23 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
     try {
         var TracklistRow_tag__ = "TracklistRow_tag__" + response.data.split('TracklistRow_tag__')[1].split('"')[0] //there may not be an explicit song
         var Tag_container__ = "Tag_container__" + response.data.split('Tag_container__')[1].split('"')[0] //not sure how this is not found sometimes
-    } catch {}
-    classes = { //the class names change every few weeks
-        "TrackList_trackListContainer__": 'TrackList_trackListContainer__' + response.data.split('TrackList_trackListContainer__')[1].split('"')[0],
-        "TracklistRow_title__": "TracklistRow_title__" + response.data.split('TracklistRow_title__')[1].split('"')[0],
-        "TracklistRow_subtitle__": "TracklistRow_subtitle__" + response.data.split('TracklistRow_subtitle__')[1].split('"')[0],
-        "Tag_container__": Tag_container__,
-        "TracklistRow_tag__": TracklistRow_tag__
+    } catch {
+        message.reply("There was an error parsing the data, make sure your requested item is public")
+        creatingPlaylist = false
+        return
+    }
+    try {
+        classes = { //the class names change every few weeks
+            "TrackList_trackListContainer__": 'TrackList_trackListContainer__' + response.data.split('TrackList_trackListContainer__')[1].split('"')[0],
+            "TracklistRow_title__": "TracklistRow_title__" + response.data.split('TracklistRow_title__')[1].split('"')[0],
+            "TracklistRow_subtitle__": "TracklistRow_subtitle__" + response.data.split('TracklistRow_subtitle__')[1].split('"')[0],
+            "Tag_container__": Tag_container__,
+            "TracklistRow_tag__": TracklistRow_tag__
+        }
+    } catch {
+        message.reply("There was an error parsing the data, make sure your requested item is public")
+        creatingPlaylist = false
+        return
     }
     let data = response.data.split('<ol class="' + classes.TrackList_trackListContainer__ + '" aria-label="Track list">')[1].split("</ol>")[0].split("</li>")
     for (let i = 0; i < data.length - 1; i++) {
@@ -428,7 +438,7 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
 }
 
 client.on('messageCreate', async (message) => {
-    if(message.author.bot) return
+    if (message.author.bot) return
     if (awaiting && iInteractions(message.author.username) > -1) { //if theres an interaction awaiting for the user
         if (message.content.toLowerCase() == "cancel") {
             message.reply("cancelled")
