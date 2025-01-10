@@ -1,9 +1,10 @@
-const ytdl = require('@distube/ytdl-core');
 const path = require('path');
 const axios = require('axios');
 const youtubesearchapi = require("youtube-search-api");
 const fs = require('fs')
 const he = require('he');
+
+const spawn = require("child_process").spawn
 
 const CONFIG_FILE = "creds.json"
 
@@ -90,6 +91,8 @@ function waitDownload(song) { //a looping function to make sure there is only a 
     }
 }
 
+var proc
+
 function play(song) { //function to play a song
     if (playing) {
         stop(song)
@@ -100,66 +103,49 @@ function play(song) { //function to play a song
 
     console.log(song.message.author.username + ": " + song.link)
 
-    if (!ytdl.validateURL(song.link)) { //make sure the link is valid
-        client.channels.cache.get(channelId).send("Please give me a valid video link from youtube")
-        downloading = false
-        return
-    }
-
     filePath = "./files/" + vidId + ".mp4"
-
-    var outputStream = fs.createWriteStream(filePath);
 
     failed = false
 
-    ytdl(song.link, {
-            filter: 'audioonly',
-            quality: "highestaudio"
-        })
-        .on('error', (error) => {
-            song.message.reply('Video unreachable ' + error) // some videos have a special protection that triggers this
-            console.log(error)
-            outputStream.close();
-            downloading = false
-            failed = true
+    proc = spawn("./yt-dlp", ["-o", filePath, song.link.split("&")[0], "-f", "bestaudio[ext=m4a]", "--extract-audio"], {
+        detached: true
+    });
+
+    proc.on('error', (err) => {
+        song.message.reply(`Error: ${err.message}`);
+    });
+
+    proc.on('exit', () => {
+        downloading = false
+        if (!song.message.member || !song.message.member.voice.channel) {
+            song.message.reply("Can't see your channel") // check here instead of before the download in case the user leaves for some reason during the download
             return
-        })
-        .pipe(outputStream)
-        .on('finish', () => {
-            if (failed) {
-                return
-            }
-            downloading = false
-            if (!song.message.member || !song.message.member.voice.channel) {
-                song.message.reply("Can't see your channel") // check here instead of before the download in case the user leaves for some reason during the download
-                return
-            }
+        }
 
-            connection = joinVoiceChannel({
-                channelId: song.message.member.voice.channel.id,
-                guildId: song.message.guild.id,
-                adapterCreator: song.message.guild.voiceAdapterCreator,
-            });
-
-            const player = createAudioPlayer();
-
-            try {
-                start(song, player)
-                current = song
-                var playingMessage = ""
-                playing = true
-                playingMessage = 'Now Playing:\n**' + song.name + "**"
-                song.message.channel.send(playingMessage)
-            } catch (error) {
-                console.error(error);
-                try {
-                    connection.destroy();
-                } catch {}
-                playing = false
-                return
-            }
-            outputStream.close();
+        connection = joinVoiceChannel({
+            channelId: song.message.member.voice.channel.id,
+            guildId: song.message.guild.id,
+            adapterCreator: song.message.guild.voiceAdapterCreator,
         });
+
+        const player = createAudioPlayer();
+
+        try {
+            start(song, player)
+            current = song
+            var playingMessage = ""
+            playing = true
+            playingMessage = 'Now Playing:\n**' + song.name + "**"
+            song.message.channel.send(playingMessage)
+        } catch (error) {
+            console.error(error);
+            try {
+                connection.destroy();
+            } catch {}
+            playing = false
+            return
+        }
+    });
 }
 
 function getName(link) {
@@ -369,7 +355,7 @@ async function createPlaylist(url, message) { //open a spotify playlist and look
             "Tag_container__": Tag_container__,
             "TracklistRow_tag__": TracklistRow_tag__
         }
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         message.reply("There was an error parsing the data, make sure your requested item is public")
         creatingPlaylist = false

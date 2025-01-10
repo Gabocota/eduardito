@@ -1,11 +1,10 @@
 {
   "dependencies": {
-    "@discordjs/voice": "^0.17.0",
-    "@distube/ytdl-core": "^4.13.7",
-    "axios": "^1.7.3",
-    "discord.js": "^14.15.3",
-    "he": "^1.2.0",
-    "sodium": "^3.0.2",
-    "youtube-search-api": "^1.2.2"
+    "@discordjs/voice": "latest",
+    "axios": "latest",
+    "discord.js": "latest",
+    "he": "latest",
+    "sodium": "latest",
+    "youtube-search-api": "latest"
   }
 }
