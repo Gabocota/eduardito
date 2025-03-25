@@ -107,11 +107,9 @@ function play(song) { //function to play a song
 
     failed = false
 
-    proc = spawn("./yt-dlp", ["-o", filePath, song.link.split("&")[0], "-f", "bestaudio[ext=m4a]", "--extract-audio"], {
+    proc = spawn("./yt-dlp", ["-o", filePath, song.link.split("&")[0], "-f bestaudio"], {
         detached: true
     });
-
-    console.log("./yt-dlp -o", filePath, song.link.split("&")[0], "-f 234")
 
     proc.on('error', (err) => {
         song.message.reply(`Error: ${err.message}`);
