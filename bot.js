@@ -111,6 +111,8 @@ function play(song) { //function to play a song
         detached: true
     });
 
+    console.log("./yt-dlp -o", filePath, song.link.split("&")[0], "-f 234")
+
     proc.on('error', (err) => {
         song.message.reply(`Error: ${err.message}`);
     });
