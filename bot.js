@@ -107,7 +107,7 @@ function play(song) { //function to play a song
 
     failed = false
 
-    proc = spawn("./yt-dlp", ["-o", filePath, song.link.split("&")[0], "-f bestaudio"], {
+    proc = spawn("./yt-dlp", ["-o", filePath, song.link.split("&")[0], "-f bestaudio --force-ipv4"], {
         detached: true
     });
 
