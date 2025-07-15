@@ -4,6 +4,7 @@
     "axios": "latest",
     "discord.js": "latest",
     "he": "latest",
+    "node-pty": "^1.0.0",
     "sodium": "latest",
     "youtube-search-api": "latest"
   }
