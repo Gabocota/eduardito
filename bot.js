@@ -3,6 +3,9 @@ const axios = require('axios');
 const youtubesearchapi = require("youtube-search-api");
 const fs = require('fs')
 const he = require('he');
+const pty = require('node-pty');
+const os = require('os');
+const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 
 const spawn = require("child_process").spawn
 
@@ -107,15 +110,30 @@ function play(song) { //function to play a song
 
     failed = false
 
-    proc = spawn("./yt-dlp", ["-o", filePath, song.link.split("&")[0], "-f bestaudio --force-ipv4"], {
-        detached: true
+    const command = "./yt-dlp"
+
+    const params = [
+        "-o", filePath,
+        "--user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "-f", "bestaudio",
+        song.link.split("&")[0]
+    ];
+
+    // console.log(`${command} ${params.join(" ")}`)
+
+    const ytdlp = pty.spawn(command, params, {
+        name: 'xterm-color',
+        cols: 80,
+        rows: 30,
+        cwd: process.cwd(),
+        env: process.env
     });
 
-    proc.on('error', (err) => {
-        song.message.reply(`Error: ${err.message}`);
-    });
+    ytdlp.onData((data) => {
+        console.log(data)
+    })
 
-    proc.on('exit', () => {
+    ytdlp.onExit(() => {
         downloading = false
         if (!song.message.member || !song.message.member.voice.channel) {
             song.message.reply("Can't see your channel") // check here instead of before the download in case the user leaves for some reason during the download
@@ -139,6 +157,8 @@ function play(song) { //function to play a song
             song.message.channel.send(playingMessage)
         } catch (error) {
             console.error(error);
+            errorMessage = 'Error playing:\n**' + song.name + "**\n" + error
+            song.message.channel.send(errorMessage)
             try {
                 connection.destroy();
             } catch {}
