@@ -1,2 +1,5 @@
+bash.sh
 creds.json
+package-lock.json
+node_modules
 songs.txt
