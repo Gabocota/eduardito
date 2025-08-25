@@ -32,7 +32,8 @@ var queue = []
 const {
     Client,
     Events,
-    GatewayIntentBits
+    GatewayIntentBits,
+    range
 } = require('discord.js');
 
 const client = new Client({
@@ -590,55 +591,7 @@ client.on('messageCreate', async (message) => {
             message.reply("Your shit failed contact gabocota idk")
         }
     } else if (message.content.toLowerCase().split(" ")[0] == "!lyrics" || message.content.toLowerCase().split(" ")[0] == "!l") { //looks for the lyrics in azlyrics.com
-        if (message.content.toLowerCase().split(" ").length == 1) {
-            try {
-                var searchQuery = current.name.split(" ").join("%20")
-                if (searchQuery.indexOf("–") != -1 && searchQuery.split("–%20")[1] != "") { // – this is dumb
-                    searchQuery = searchQuery.split("%20–%20")[1] + "%20" + searchQuery.split("%20–%20")[0]
-                }
-                if (searchQuery.indexOf("-") != -1 && searchQuery.split("-%20")[1] != "") { // - but theres two different characters
-                    searchQuery = searchQuery.split("%20-%20")[1] + "%20" + searchQuery.split("%20-%20")[0]
-                }
-                if (searchQuery.indexOf("(") != -1 && searchQuery.replace(/\([^)]*\)/g, '')) { // delete ()
-                    searchQuery = searchQuery.replace(/\([^)]*\)/g, '')
-                }
-                if (searchQuery.indexOf("[") != -1 && searchQuery.replace(/\[[^\]]*\]/g, '')) { // delete []
-                    searchQuery = searchQuery.replace(/\[[^\]]*\]/g, '')
-                }
-            } catch {
-                message.reply("Please add a song name lmao")
-                return
-            }
-        } else {
-            var searchQuery = message.content.toLowerCase().split(" ").slice(1).join("%20")
-        }
-        axios.get("https://search.azlyrics.com/suggest.php?q=" + searchQuery)
-            .then(data => {
-                try {
-                    var link = data.data.songs[0].url
-                } catch {
-                    message.reply("No result found, please enter the name after the command to brute force it")
-                    return
-                }
-                axios.get(link)
-                    .then(data => {
-                        try {
-                            var lyrics = data.data.split("Sorry about that. -->")[1].split("</div>")[0].split("<br>").join("").trim().replace(/<[^>]*>/g, "")
-                            if (lyrics.length <= 1950) {
-                                message.reply("**" + lyrics + "**")
-                            } else {
-                                var messages = returnChunksArray(lyrics, 1950)
-                                for (let i = 0; i < messages.length; i++) {
-                                    message.reply("**" + messages[i] + "**")
-                                }
-                            }
-                        } catch (e) {
-                            message.reply("Failed getting lyrics" + e)
-                            return
-                        }
-
-                    })
-            })
+        message.reply("Im sorry but the lyrics function is under maintenance")
     } else if (message.content.toLowerCase().split(" ")[0] == "!leave" && message.author.id == config.admin_id) { //just to make sure you can leave any server you want without having config.adminid
         message.reply("bye")
         message.guild.leave()
